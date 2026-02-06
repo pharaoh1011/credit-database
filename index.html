@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Credit Database</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-grid"></div>
+    <div class="bg-particles" id="particles"></div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">
+                <svg viewBox="0 0 40 40" fill="none">
+                    <rect x="2" y="2" width="36" height="36" rx="8" stroke="url(#logoGrad)" stroke-width="2"/>
+                    <path d="M12 14h16M12 20h12M12 26h8" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="30" cy="26" r="4" stroke="#00d4ff" stroke-width="1.5"/>
+                    <path d="M28 26l1.5 1.5L32 24" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40">
+                            <stop stop-color="#00d4ff"/>
+                            <stop offset="1" stop-color="#8b5cf6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="logo-text">
+                <span class="logo-title">THE CREDIT</span>
+                <span class="logo-subtitle">DATABASE</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="#" class="nav-link active" data-page="dashboard" onclick="App.navigate('dashboard')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1"/>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-link" data-page="upload" onclick="App.navigate('upload')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>Upload Report</span>
+            </a>
+            <a href="#" class="nav-link" data-page="clients" onclick="App.navigate('clients')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 010 7.75"/>
+                </svg>
+                <span>Clients</span>
+            </a>
+            <a href="#" class="nav-link" data-page="disputes" onclick="App.navigate('disputes')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
+                </svg>
+                <span>Dispute Letters</span>
+            </a>
+            <a href="#" class="nav-link" data-page="templates" onclick="App.navigate('templates')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <path d="M3 9h18M9 21V9"/>
+                </svg>
+                <span>Templates</span>
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-dot"></div>
+                <span>System Online</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content" id="mainContent">
+
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <button class="menu-toggle" id="menuToggle" onclick="App.toggleSidebar()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
+            <div class="search-bar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" placeholder="Search clients, disputes, accounts..." id="globalSearch" oninput="App.handleSearch(this.value)">
+            </div>
+            <div class="top-bar-actions">
+                <button class="btn-icon" title="Notifications">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 01-3.46 0"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- ========== DASHBOARD PAGE ========== -->
+        <section class="page active" id="page-dashboard">
+            <div class="page-header">
+                <h1>Dashboard</h1>
+                <p class="page-desc">Overview of your credit repair operations</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statClients">0</span>
+                        <span class="stat-label">Total Clients</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statDisputes">0</span>
+                        <span class="stat-label">Active Disputes</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statAccounts">0</span>
+                        <span class="stat-label">Accounts Disputed</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon amber">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statResolved">0</span>
+                        <span class="stat-label">Letters Generated</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card recent-clients">
+                    <div class="card-header">
+                        <h3>Recent Clients</h3>
+                        <button class="btn-sm" onclick="App.navigate('clients')">View All</button>
+                    </div>
+                    <div class="card-body" id="recentClientsList">
+                        <div class="empty-state-small">
+                            <p>No clients yet. Upload a credit report to get started.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card quick-actions">
+                    <div class="card-header">
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="card-body">
+                        <button class="action-btn" onclick="App.navigate('upload')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            Upload Credit Report
+                        </button>
+                        <button class="action-btn" onclick="App.navigate('clients')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/>
+                                <circle cx="8.5" cy="7" r="4"/>
+                                <line x1="20" y1="8" x2="20" y2="14"/>
+                                <line x1="23" y1="11" x2="17" y2="11"/>
+                            </svg>
+                            Add New Client
+                        </button>
+                        <button class="action-btn" onclick="App.navigate('templates')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                <path d="M3 9h18M9 21V9"/>
+                            </svg>
+                            View Templates
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card recent-activity">
+                <div class="card-header">
+                    <h3>Recent Activity</h3>
+                </div>
+                <div class="card-body" id="recentActivity">
+                    <div class="empty-state-small">
+                        <p>No recent activity.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== UPLOAD PAGE ========== -->
+        <section class="page" id="page-upload">
+            <div class="page-header">
+                <h1>Upload Credit Report</h1>
+                <p class="page-desc">Drag and drop a credit report PDF to begin analysis</p>
+            </div>
+
+            <!-- Client Selection -->
+            <div class="card upload-client-select">
+                <div class="card-header">
+                    <h3>Select or Create Client</h3>
+                </div>
+                <div class="card-body">
+                    <div class="client-select-row">
+                        <div class="form-group" style="flex:1">
+                            <label>Existing Client</label>
+                            <select id="uploadClientSelect" onchange="App.onClientSelectChange()">
+                                <option value="">-- Select a client --</option>
+                                <option value="new">+ Create New Client</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="new-client-form" id="newClientForm" style="display:none">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name *</label>
+                                <input type="text" id="clientName" placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label>Date of Birth</label>
+                                <input type="date" id="clientDob">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>SSN (Last 4)</label>
+                                <input type="text" id="clientSsn" placeholder="XXXX" maxlength="4">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" id="clientPhone" placeholder="(555) 123-4567">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="clientEmail" placeholder="john@example.com">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group" style="flex:2">
+                                <label>Street Address *</label>
+                                <input type="text" id="clientAddress" placeholder="123 Main St">
+                            </div>
+                            <div class="form-group">
+                                <label>City *</label>
+                                <input type="text" id="clientCity" placeholder="Atlanta">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>State *</label>
+                                <input type="text" id="clientState" placeholder="GA" maxlength="2">
+                            </div>
+                            <div class="form-group">
+                                <label>Zip *</label>
+                                <input type="text" id="clientZip" placeholder="30301" maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drop Zone -->
+            <div class="drop-zone-container">
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-zone-inner">
+                        <div class="drop-icon">
+                            <svg viewBox="0 0 80 80" fill="none">
+                                <rect x="10" y="8" width="44" height="56" rx="4" stroke="url(#uploadGrad)" stroke-width="2"/>
+                                <path d="M38 8v12h16" stroke="url(#uploadGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M24 40l8-8 8 8" stroke="#00d4ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <line x1="32" y1="32" x2="32" y2="52" stroke="#00d4ff" stroke-width="2.5" stroke-linecap="round"/>
+                                <circle cx="56" cy="54" r="16" stroke="url(#uploadGrad)" stroke-width="2" stroke-dasharray="4 3"/>
+                                <path d="M56 46v16M48 54h16" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
+                                <defs>
+                                    <linearGradient id="uploadGrad" x1="0" y1="0" x2="80" y2="80">
+                                        <stop stop-color="#00d4ff"/>
+                                        <stop offset="1" stop-color="#8b5cf6"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <h2 class="drop-title">Drop Credit Report Here</h2>
+                        <p class="drop-subtitle">or click to browse files</p>
+                        <p class="drop-hint">Supports PDF files from all three bureaus</p>
+                        <div class="bureau-badges">
+                            <span class="bureau-badge experian">Experian</span>
+                            <span class="bureau-badge equifax">Equifax</span>
+                            <span class="bureau-badge transunion">TransUnion</span>
+                        </div>
+                    </div>
+                    <div class="drop-zone-border"></div>
+                    <input type="file" id="fileInput" accept=".pdf" style="display:none" multiple>
+                </div>
+            </div>
+
+            <!-- Upload Progress -->
+            <div class="card upload-progress" id="uploadProgress" style="display:none">
+                <div class="card-body">
+                    <div class="progress-header">
+                        <span class="progress-title" id="progressTitle">Analyzing credit report...</span>
+                        <span class="progress-percent" id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-steps">
+                        <div class="progress-step active" id="step1">
+                            <div class="step-dot"></div>
+                            <span>Extracting Text</span>
+                        </div>
+                        <div class="progress-step" id="step2">
+                            <div class="step-dot"></div>
+                            <span>Identifying Info</span>
+                        </div>
+                        <div class="progress-step" id="step3">
+                            <div class="step-dot"></div>
+                            <span>Analyzing Accounts</span>
+                        </div>
+                        <div class="progress-step" id="step4">
+                            <div class="step-dot"></div>
+                            <span>Complete</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parsed Results -->
+            <div id="parsedResults" style="display:none">
+                <!-- Personal Info Card -->
+                <div class="card parsed-info">
+                    <div class="card-header">
+                        <h3>Personal Information (Extracted)</h3>
+                        <span class="badge badge-info">Editable</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="parsedName">
+                            </div>
+                            <div class="form-group">
+                                <label>Date of Birth</label>
+                                <input type="text" id="parsedDob">
+                            </div>
+                            <div class="form-group">
+                                <label>SSN (Last 4)</label>
+                                <input type="text" id="parsedSsn" maxlength="4">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group" style="flex:2">
+                                <label>Address</label>
+                                <input type="text" id="parsedAddress">
+                            </div>
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" id="parsedCity">
+                            </div>
+                            <div class="form-group">
+                                <label>State</label>
+                                <input type="text" id="parsedState" maxlength="2">
+                            </div>
+                            <div class="form-group">
+                                <label>Zip</label>
+                                <input type="text" id="parsedZip">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Derogatory Accounts -->
+                <div class="card parsed-accounts">
+                    <div class="card-header">
+                        <h3>Derogatory Accounts Found</h3>
+                        <div class="header-actions">
+                            <button class="btn-sm" onclick="App.selectAllAccounts()">Select All</button>
+                            <button class="btn-sm btn-outline" onclick="App.deselectAllAccounts()">Deselect All</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="accounts-filter">
+                            <button class="filter-btn active" data-filter="all" onclick="App.filterAccounts('all')">All</button>
+                            <button class="filter-btn" data-filter="collection" onclick="App.filterAccounts('collection')">Collections</button>
+                            <button class="filter-btn" data-filter="late_payment" onclick="App.filterAccounts('late_payment')">Late Payments</button>
+                            <button class="filter-btn" data-filter="charge_off" onclick="App.filterAccounts('charge_off')">Charge-Offs</button>
+                            <button class="filter-btn" data-filter="public_record" onclick="App.filterAccounts('public_record')">Public Records</button>
+                            <button class="filter-btn" data-filter="repossession" onclick="App.filterAccounts('repossession')">Repossessions</button>
+                        </div>
+                        <div class="accounts-list" id="accountsList">
+                            <!-- Populated dynamically -->
+                        </div>
+                        <div class="accounts-summary" id="accountsSummary">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template Selection -->
+                <div class="card template-select">
+                    <div class="card-header">
+                        <h3>Select Dispute Letter Template</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="template-grid" id="templateGrid">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generate Button -->
+                <div class="generate-section">
+                    <div class="generate-info">
+                        <p>This will generate <strong>3 separate dispute letters</strong> - one for each credit bureau.</p>
+                        <div class="bureau-targets">
+                            <span class="bureau-target experian">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                Experian
+                            </span>
+                            <span class="bureau-target equifax">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                Equifax
+                            </span>
+                            <span class="bureau-target transunion">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                TransUnion
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn-generate" id="btnGenerate" onclick="App.generateLetters()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                            <polyline points="6 9 6 2 18 2 18 9"/>
+                            <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+                            <rect x="6" y="14" width="12" height="8"/>
+                        </svg>
+                        Generate Dispute Letters
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== CLIENTS PAGE ========== -->
+        <section class="page" id="page-clients">
+            <div class="page-header">
+                <h1>Client Management</h1>
+                <p class="page-desc">Manage your credit repair clients</p>
+                <button class="btn-primary" onclick="App.showAddClientModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Add Client
+                </button>
+            </div>
+
+            <div class="clients-toolbar">
+                <div class="search-inline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input type="text" placeholder="Search clients..." id="clientSearch" oninput="CRM.filterClients(this.value)">
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid" onclick="App.setClientView('grid')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18">
+                            <rect x="3" y="3" width="7" height="7"/>
+                            <rect x="14" y="3" width="7" height="7"/>
+                            <rect x="3" y="14" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/>
+                        </svg>
+                    </button>
+                    <button class="view-btn" data-view="list" onclick="App.setClientView('list')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18">
+                            <line x1="8" y1="6" x2="21" y2="6"/>
+                            <line x1="8" y1="12" x2="21" y2="12"/>
+                            <line x1="8" y1="18" x2="21" y2="18"/>
+                            <line x1="3" y1="6" x2="3.01" y2="6"/>
+                            <line x1="3" y1="12" x2="3.01" y2="12"/>
+                            <line x1="3" y1="18" x2="3.01" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="clients-grid" id="clientsGrid">
+                <div class="empty-state" id="clientsEmpty">
+                    <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
+                        <circle cx="40" cy="30" r="16" stroke="#3a3a5c" stroke-width="2"/>
+                        <path d="M16 68c0-13.255 10.745-24 24-24s24 10.745 24 24" stroke="#3a3a5c" stroke-width="2"/>
+                    </svg>
+                    <h3>No Clients Yet</h3>
+                    <p>Add your first client or upload a credit report to get started.</p>
+                    <button class="btn-primary" onclick="App.navigate('upload')">Upload Credit Report</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== CLIENT DETAIL PAGE ========== -->
+        <section class="page" id="page-client-detail">
+            <div class="page-header">
+                <button class="btn-back" onclick="App.navigate('clients')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                        <line x1="19" y1="12" x2="5" y2="12"/>
+                        <polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                    Back to Clients
+                </button>
+                <h1 id="clientDetailName">Client Name</h1>
+            </div>
+
+            <div class="client-detail-grid">
+                <div class="card client-info-card">
+                    <div class="card-header">
+                        <h3>Client Information</h3>
+                        <button class="btn-sm" onclick="App.editClient()">Edit</button>
+                    </div>
+                    <div class="card-body" id="clientDetailInfo">
+                    </div>
+                </div>
+
+                <div class="card client-files-card">
+                    <div class="card-header">
+                        <h3>Credit Reports</h3>
+                        <button class="btn-sm" onclick="App.uploadForClient()">Upload New</button>
+                    </div>
+                    <div class="card-body" id="clientDetailFiles">
+                    </div>
+                </div>
+
+                <div class="card client-letters-card" style="grid-column: 1 / -1">
+                    <div class="card-header">
+                        <h3>Dispute Letters</h3>
+                    </div>
+                    <div class="card-body" id="clientDetailLetters">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== DISPUTES PAGE ========== -->
+        <section class="page" id="page-disputes">
+            <div class="page-header">
+                <h1>Dispute Letters</h1>
+                <p class="page-desc">View and manage all generated dispute letters</p>
+            </div>
+            <div class="disputes-list" id="disputesList">
+                <div class="empty-state">
+                    <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
+                        <rect x="16" y="8" width="48" height="64" rx="4" stroke="#3a3a5c" stroke-width="2"/>
+                        <line x1="26" y1="24" x2="54" y2="24" stroke="#3a3a5c" stroke-width="2"/>
+                        <line x1="26" y1="34" x2="54" y2="34" stroke="#3a3a5c" stroke-width="2"/>
+                        <line x1="26" y1="44" x2="44" y2="44" stroke="#3a3a5c" stroke-width="2"/>
+                    </svg>
+                    <h3>No Dispute Letters Yet</h3>
+                    <p>Upload a credit report and generate dispute letters to see them here.</p>
+                    <button class="btn-primary" onclick="App.navigate('upload')">Upload Credit Report</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== TEMPLATES PAGE ========== -->
+        <section class="page" id="page-templates">
+            <div class="page-header">
+                <h1>Dispute Letter Templates</h1>
+                <p class="page-desc">Browse and preview available dispute letter templates</p>
+            </div>
+            <div class="templates-showcase" id="templatesShowcase">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
+
+        <!-- ========== LETTER PREVIEW PAGE ========== -->
+        <section class="page" id="page-letter-preview">
+            <div class="page-header">
+                <button class="btn-back" onclick="App.navigate('upload')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                        <line x1="19" y1="12" x2="5" y2="12"/>
+                        <polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                    Back
+                </button>
+                <h1>Generated Dispute Letters</h1>
+            </div>
+
+            <div class="letter-tabs">
+                <button class="letter-tab active" data-bureau="experian" onclick="App.switchLetterTab('experian')">
+                    <span class="tab-dot experian"></span> Experian
+                </button>
+                <button class="letter-tab" data-bureau="equifax" onclick="App.switchLetterTab('equifax')">
+                    <span class="tab-dot equifax"></span> Equifax
+                </button>
+                <button class="letter-tab" data-bureau="transunion" onclick="App.switchLetterTab('transunion')">
+                    <span class="tab-dot transunion"></span> TransUnion
+                </button>
+            </div>
+
+            <div class="letter-preview-container">
+                <div class="letter-actions-bar">
+                    <button class="btn-primary" onclick="App.downloadLetter('current')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download This Letter
+                    </button>
+                    <button class="btn-secondary" onclick="App.downloadAllLetters()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download All 3 Letters
+                    </button>
+                    <button class="btn-outline-light" onclick="App.saveToClient()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                            <polyline points="17 21 17 13 7 13 7 21"/>
+                            <polyline points="7 3 7 8 15 8"/>
+                        </svg>
+                        Save to Client File
+                    </button>
+                </div>
+                <div class="letter-paper" id="letterPreview">
+                    <!-- Letter content rendered here -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay" onclick="App.closeModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="modalTitle">Modal</h3>
+                <button class="modal-close" onclick="App.closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="js/templates.js"></script>
+    <script src="js/pdf-parser.js"></script>
+    <script src="js/crm.js"></script>
+    <script src="js/letter-generator.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
